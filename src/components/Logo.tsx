@@ -1,43 +1,27 @@
 //Logo component
 
-import { useId } from 'react'
 import clsx from 'clsx'
 
 export function Logomark({
   invert = false,
-  filled = false,
   ...props
 }: React.ComponentPropsWithoutRef<'svg'> & {
   invert?: boolean
-  filled?: boolean
 }) {
-  let id = useId()
-
   return (
-    <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>
-      <rect
-        clipPath={`url(#${id}-clip)`}
-        className={clsx(
-          'h-8 transition-all duration-300',
-          invert ? 'fill-white' : 'fill-neutral-950',
-          filled ? 'w-8' : 'w-0 group-hover/logo:w-8',
-        )}
-      />
-      <use
-        href={`#${id}-path`}
+    <svg
+      viewBox="0 0 222 252"
+      aria-hidden="true"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M115 123.5V237.164C115 240.223 111.707 242.15 109.041 240.651L12.0405 186.147C10.7801 185.438 10 184.105 10 182.659V66.5M115 123.5L10 66.5M115 123.5L211.5 66.5M10 66.5L107.536 10.625C108.755 9.92701 110.25 9.91905 111.476 10.6041L211.5 66.5M211.5 66.5V182.82C211.5 184.179 210.81 185.445 209.669 186.182L165 215"
         className={invert ? 'stroke-white' : 'stroke-neutral-950'}
-        fill="none"
-        strokeWidth="1.5"
+        strokeWidth="20"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <defs>
-        <path
-          id={`${id}-path`}
-          d="M3.25 26v.75H7c1.305 0 2.384-.21 3.346-.627.96-.415 1.763-1.02 2.536-1.752.695-.657 1.39-1.443 2.152-2.306l.233-.263c.864-.975 1.843-2.068 3.071-3.266 1.209-1.18 2.881-1.786 4.621-1.786h5.791V5.25H25c-1.305 0-2.384.21-3.346.627-.96.415-1.763 1.02-2.536 1.751-.695.658-1.39 1.444-2.152 2.307l-.233.263c-.864.975-1.843 2.068-3.071 3.266-1.209 1.18-2.881 1.786-4.621 1.786H3.25V26Z"
-        />
-        <clipPath id={`${id}-clip`}>
-          <use href={`#${id}-path`} />
-        </clipPath>
-      </defs>
     </svg>
   )
 }
@@ -45,12 +29,10 @@ export function Logomark({
 export function Logo({
   className,
   invert = false,
-  filled = false,
   fillOnHover = false,
   ...props
 }: React.ComponentPropsWithoutRef<'svg'> & {
   invert?: boolean
-  filled?: boolean
   fillOnHover?: boolean
 }) {
   return (
@@ -63,7 +45,6 @@ export function Logo({
       <Logomark
         preserveAspectRatio="xMinYMid meet"
         invert={invert}
-        filled={filled}
       />
       <path
         className={invert ? 'fill-white' : 'fill-neutral-950'}

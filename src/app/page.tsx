@@ -14,17 +14,18 @@ import { Testimonial } from '@/components/Testimonial'
 import { LogoCarousel } from '@/components/ui/logo-carousel'
 import { WorldMap } from '@/components/ui/world-map'
 import { Accordion } from '@/components/ui/accordion'
-import { ProgressiveBlur } from '@/components/ui/progressive-blur'
+import vggLogo from '@/images/clients/vgg/vgg-logo.png'
 import { ClientLogosDisplay } from '@/components/ClientLogos'
-import logoDealFuze from '@/images/clients/dealfuze/logo.svg'
+import logoIdiAfrica from '@/images/clients/idi-africa/idi-logomark.png'
 import logoRenda from '@/images/clients/renda/logo.svg'
-import logoCommunityWolf from '@/images/clients/community-wolf/logo.svg'
+import logoActionLabs from '@/images/clients/action-labs/logomark.png'
 import logoCommunityWolfW from '@/images/clients/community-wolf/LogoW.svg'
 import logoKenyaParliament from '@/images/clients/kenya-parliament/Kenya Coat of Arms Official.svg'
 import logoMsingi from '@/images/clients/Msingi/Logo.svg'
-import logoWordAndLearn from '@/images/clients/wordandlearn/WordandLearn Logo.svg'
 import logoNigeria from '@/images/clients/nigeria/Coat of Arms Nigeria.svg'
 import logoStorefront from '@/images/clients/Storefront/Logo.svg'
+import logoFibertime from '@/images/clients/fibertime/fibertime-logo.svg'
+import logoLegends from '@/images/clients/legends/legends-logo.png'
 import logoBaobab from '@/images/clients/baobab/logo.svg'
 import imageLaptop from '@/images/laptop.jpg'
 import { type CaseStudy, type MDXEntry, loadCaseStudies } from '@/lib/mdx'
@@ -35,15 +36,18 @@ import imageTom from '@/app/work/renda/tom-fairburn.jpg'
 import imageToby from '@/app/work/baobab/toby-hanington.jpg'
 
 const clientLogos = [
-  { name: 'DealFuze', id: 1, src: logoDealFuze },
+  { name: 'Action Labs', id: 1, src: logoActionLabs },
   { name: 'Renda', id: 2, src: logoRenda },
+  { name: 'Fibertime', id: 11, src: logoFibertime },
   { name: 'Community Wolf', id: 3, src: logoCommunityWolfW },
-  { name: 'Baobab', id: 4, src: logoBaobab },
-  { name: 'Kenya Parliament', id: 5, src: logoKenyaParliament },
-  { name: 'Msingi', id: 6, src: logoMsingi },
-  { name: 'Word and Learn', id: 7, src: logoWordAndLearn },
-  { name: 'Nigeria', id: 8, src: logoNigeria },
-  { name: 'Storefront', id: 9, src: logoStorefront }
+  { name: 'IDI Africa', id: 4, src: logoIdiAfrica },
+  { name: 'VGG', id: 5, src: vggLogo },
+  { name: 'Baobab', id: 6, src: logoBaobab },
+  { name: 'Legends', id: 12, src: logoLegends },
+  { name: 'Kenya Parliament', id: 7, src: logoKenyaParliament },
+  { name: 'Msingi', id: 8, src: logoMsingi },
+  { name: 'Nigeria', id: 9, src: logoNigeria },
+  { name: 'Storefront', id: 10, src: logoStorefront },
 ]
 
 // Define global connection dots for the WorldMap
@@ -82,7 +86,7 @@ function Clients() {
       <div className="absolute inset-0 opacity-50 pointer-events-none">
         <WorldMap dots={globalConnections} lineColor="#FFFFFF" />
       </div>
-      
+
       <Container className="relative z-10">
         <FadeIn>
           <div className="mx-auto max-w-3xl text-center">
@@ -125,7 +129,7 @@ function ProDGIntro() {
             We combine advanced software development, strategic insights, and comprehensive business support to drive digital transformation and venture success for leading organizations around the world.
           </p>
           <div className="mt-10">
-            <Link 
+            <Link
               href="/contact"
               className="inline-flex items-center justify-center rounded-full bg-neutral-950 px-6 py-3 text-base font-semibold text-white hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-950 focus:ring-offset-2"
             >
@@ -151,9 +155,9 @@ function CaseStudies({
         centered
       >
         <p>
-          See how we've helped our clients achieve excellence, growth, and innovation 
-          through customized solutions. Our projects combine user-focused design, 
-          powerful technology, and strategic thinking to elevate organizations in 
+          See how we've helped our clients achieve excellence, growth, and innovation
+          through customized solutions. Our projects combine user-focused design,
+          powerful technology, and strategic thinking to elevate organizations in
           the digital world. These success stories can inspire your own transformation.
         </p>
       </SectionIntro>
@@ -217,7 +221,7 @@ function TestimonialsSection({
     const authorName = study.testimonial.author.name;
     // Get the appropriate image for this author or use the first one as default
     const testimonialImage = authorImageMap[authorName] || imageMohamed;
-    
+
     return {
       quote: study.testimonial.content,
       name: authorName,
@@ -313,9 +317,9 @@ function Services() {
           </div>
           <div className="mt-16 lg:mt-0 lg:w-1/2 lg:min-w-[33rem] lg:pl-4">
             <FadeIn>
-              <Accordion 
-                items={serviceItems} 
-                allowMultiple={true} 
+              <Accordion
+                items={serviceItems}
+                allowMultiple={true}
                 className="bg-white rounded-2xl shadow-sm"
               />
             </FadeIn>
