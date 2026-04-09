@@ -1,55 +1,196 @@
-//Logo component
+'use client'
 
 import clsx from 'clsx'
+import Image, { type StaticImageData } from 'next/image'
+import { useEffect, useRef, useState } from 'react'
+
+import frame368 from '@/assets/logo-gif/Frame 368.png'
+import frame370 from '@/assets/logo-gif/Frame 370.png'
+import frame371 from '@/assets/logo-gif/Frame 371.png'
+import frame372 from '@/assets/logo-gif/Frame 372.png'
+import frame373 from '@/assets/logo-gif/Frame 373.png'
+import frame374 from '@/assets/logo-gif/Frame 374.png'
+import frame375 from '@/assets/logo-gif/Frame 375.png'
+import frame376 from '@/assets/logo-gif/Frame 376.png'
+import frame377 from '@/assets/logo-gif/Frame 377.png'
+import frame378 from '@/assets/logo-gif/Frame 378.png'
+import frame379 from '@/assets/logo-gif/Frame 379.png'
+import frame380 from '@/assets/logo-gif/Frame 380.png'
+import frame381 from '@/assets/logo-gif/Frame 381.png'
+import frame382 from '@/assets/logo-gif/Frame 382.png'
+import frame383 from '@/assets/logo-gif/Frame 383.png'
+import frame384 from '@/assets/logo-gif/Frame 384.png'
+import frame385 from '@/assets/logo-gif/Frame 385.png'
+import frame386 from '@/assets/logo-gif/Frame 386.png'
+import frame387 from '@/assets/logo-gif/Frame 387.png'
+import frame388 from '@/assets/logo-gif/Frame 388.png'
+import frame389 from '@/assets/logo-gif/Frame 389.png'
+import frame390 from '@/assets/logo-gif/Frame 390.png'
+import frame391 from '@/assets/logo-gif/Frame 391.png'
+import frame392 from '@/assets/logo-gif/Frame 392.png'
+import frame393 from '@/assets/logo-gif/Frame 393.png'
+import frame394 from '@/assets/logo-gif/Frame 394.png'
+import frame395 from '@/assets/logo-gif/Frame 395.png'
+import frame396 from '@/assets/logo-gif/Frame 396.png'
+
+const FRAMES: StaticImageData[] = [
+  frame368, frame370, frame371, frame372, frame373, frame374, frame375,
+  frame376, frame377, frame378, frame379, frame380, frame381, frame382,
+  frame383, frame384, frame385, frame386, frame387, frame388, frame389,
+  frame390, frame391, frame392, frame393, frame394, frame395, frame396,
+]
+
+const LAST_FRAME = FRAMES[FRAMES.length - 1]
+
+// Per-frame durations in ms — varies the pacing across the animation.
+// Indices 0–27 map to frames 368–396.
+const FRAME_DURATIONS: number[] = [
+  // 0-4 (368–373): opening — let the first strokes register
+  50, 55, 60, 60, 65,
+  // 5-9 (374–378): picks up speed
+  30, 30, 30, 25, 25,
+  // 10-14 (379–383): fast through the body
+  25, 25, 25, 25, 25,
+  // 15-19 (384–388): stays quick
+  25, 25, 30, 30, 30,
+  // 20-24 (389–393): easing out
+  35, 40, 45, 50, 60,
+  // 25-27 (394–396): gentle land
+  80, 100, 120,
+]
+
+function buildCumulativeTimestamps(durations: number[]): number[] {
+  const timestamps: number[] = [0]
+  for (let i = 0; i < durations.length; i++) {
+    timestamps.push(timestamps[i] + durations[i])
+  }
+  return timestamps
+}
+
+const FRAME_TIMESTAMPS = buildCumulativeTimestamps(FRAME_DURATIONS)
 
 export function Logomark({
-  invert = false,
+  className,
+  animated = false,
+  delay = 0,
   ...props
-}: React.ComponentPropsWithoutRef<'svg'> & {
-  invert?: boolean
+}: React.ComponentPropsWithoutRef<'div'> & {
+  animated?: boolean
+  delay?: number
 }) {
+  const [frameIndex, setFrameIndex] = useState(animated ? 0 : FRAMES.length - 1)
+  const [started, setStarted] = useState(!animated)
+  const rafRef = useRef<number | null>(null)
+  const startTimeRef = useRef<number | null>(null)
+
+  useEffect(function startDelay() {
+    if (!animated) return
+
+    const timeout = setTimeout(function onDelayComplete() {
+      setStarted(true)
+    }, delay)
+
+    return function cleanup() {
+      clearTimeout(timeout)
+    }
+  }, [animated, delay])
+
+  useEffect(function animateFrames() {
+    if (!started || !animated) return
+
+    function tick(timestamp: number) {
+      if (startTimeRef.current === null) {
+        startTimeRef.current = timestamp
+      }
+
+      const elapsed = timestamp - startTimeRef.current
+      let nextIndex = frameIndex
+      for (let i = FRAMES.length - 1; i >= 0; i--) {
+        if (elapsed >= FRAME_TIMESTAMPS[i]) {
+          nextIndex = i
+          break
+        }
+      }
+      nextIndex = Math.min(nextIndex, FRAMES.length - 1)
+
+      setFrameIndex(nextIndex)
+
+      if (nextIndex < FRAMES.length - 1) {
+        rafRef.current = requestAnimationFrame(tick)
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(tick)
+
+    return function cleanup() {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current)
+      }
+    }
+  }, [started, animated])
+
   return (
-    <svg
-      viewBox="0 0 222 252"
-      aria-hidden="true"
-      fill="none"
-      {...props}
-    >
-      <path
-        d="M115 123.5V237.164C115 240.223 111.707 242.15 109.041 240.651L12.0405 186.147C10.7801 185.438 10 184.105 10 182.659V66.5M115 123.5L10 66.5M115 123.5L211.5 66.5M10 66.5L107.536 10.625C108.755 9.92701 110.25 9.91905 111.476 10.6041L211.5 66.5M211.5 66.5V182.82C211.5 184.179 210.81 185.445 209.669 186.182L165 215"
-        className={invert ? 'stroke-white' : 'stroke-neutral-950'}
-        strokeWidth="20"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+    <div className={clsx('relative', className)} aria-hidden="true" {...props}>
+      <Image
+        src={FRAMES[frameIndex]}
+        alt=""
+        fill
+        sizes="(min-width: 640px) 112px, 80px"
+        priority={frameIndex === 0}
+        className="object-contain"
       />
-    </svg>
+    </div>
+  )
+}
+
+export function LogomarkStatic({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<'div'>) {
+  return (
+    <div className={clsx('relative', className)} aria-hidden="true" {...props}>
+      <Image
+        src={LAST_FRAME}
+        alt=""
+        fill
+        sizes="32px"
+        className="object-contain"
+      />
+    </div>
   )
 }
 
 export function Logo({
   className,
   invert = false,
-  fillOnHover = false,
   ...props
-}: React.ComponentPropsWithoutRef<'svg'> & {
+}: React.ComponentPropsWithoutRef<'div'> & {
   invert?: boolean
-  fillOnHover?: boolean
 }) {
   return (
-    <svg
-      viewBox="0 0 130 32"
+    <div
+      className={clsx('flex items-center gap-2', className)}
       aria-hidden="true"
-      className={clsx(fillOnHover && 'group/logo', className)}
       {...props}
     >
-      <Logomark
-        preserveAspectRatio="xMinYMid meet"
-        invert={invert}
-      />
-      <path
-        className={invert ? 'fill-white' : 'fill-neutral-950'}
-        d="M52.928 23.716c5.184 0 7.992-1.992 7.992-5.28 0-3.888-2.688-4.8-7.512-5.376-3.36-.408-4.728-.672-4.728-2.448 0-1.464 1.44-2.376 3.912-2.376 2.4 0 3.936.864 4.104 2.784h3.576c-.24-3.288-3-5.232-7.536-5.232-4.728 0-7.68 1.896-7.68 5.208 0 3.48 2.712 4.464 7.416 5.04 3.216.408 4.8.648 4.8 2.664 0 1.584-1.392 2.544-4.224 2.544-3.048 0-4.68-1.176-4.752-3.288H44.6c.072 3.408 2.616 5.76 8.328 5.76Zm14.175-.216h3.312v-2.928h-1.968c-.84 0-1.272-.24-1.272-1.104v-6.144h3.24v-2.592h-3.24V6.676l-3.36.648v3.408h-2.496v2.592h2.496v7.2c0 2.04 1.248 2.976 3.288 2.976Zm10.078.216c2.16 0 4.104-1.008 4.944-2.64h.168l.144 2.424h3.288V10.732h-3.432v6.336c0 2.4-1.584 4.032-3.984 4.032-2.328 0-3.264-1.368-3.264-3.936v-6.432h-3.432v7.032c0 4.416 2.256 5.952 5.568 5.952Zm16.24.048c2.52 0 4.2-1.008 4.944-2.496h.168l.072 2.232h3.264V6.004h-3.408v7.008h-.168c-.792-1.56-2.592-2.52-4.848-2.52-3.816 0-6.384 2.592-6.384 6.624 0 4.056 2.568 6.648 6.36 6.648Zm1.032-2.616c-2.472 0-3.96-1.536-3.96-4.032s1.488-4.008 3.96-4.008 3.984 1.512 3.984 3.648v.744c0 2.136-1.536 3.648-3.984 3.648Zm9.485-12.216h3.408V6.004h-3.408v2.928Zm0 14.568h3.408V10.732h-3.408V23.5Zm12.481.24c4.584 0 7.56-2.52 7.56-6.624 0-4.152-3-6.624-7.56-6.624s-7.56 2.52-7.56 6.624c0 4.128 3.024 6.624 7.56 6.624Zm0-2.64c-2.592 0-4.128-1.56-4.128-3.984s1.536-3.984 4.128-3.984c2.616 0 4.152 1.536 4.152 3.984 0 2.424-1.56 3.984-4.152 3.984Zm8.794 2.4h3.384v-2.88h-3.384v2.88Z"
-      />
-    </svg>
+      <div className="relative h-8 w-8 shrink-0">
+        <Image
+          src={LAST_FRAME}
+          alt=""
+          fill
+          sizes="32px"
+          className="object-contain"
+        />
+      </div>
+      <span
+        className={clsx(
+          'text-sm font-semibold tracking-wide',
+          invert ? 'text-white' : 'text-neutral-950',
+        )}
+        style={{ fontFamily: 'var(--font-montserrat), sans-serif' }}
+      >
+        ProDG Studio.
+      </span>
+    </div>
   )
 }

@@ -19,7 +19,7 @@ import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { Footer } from '@/components/Footer'
 import { GridPattern } from '@/components/GridPattern'
-import { Logo, Logomark } from '@/components/Logo'
+import { Logo, LogomarkStatic } from '@/components/Logo'
 import { Offices } from '@/components/Offices'
 import { SocialMedia } from '@/components/SocialMedia'
 
@@ -71,9 +71,8 @@ function Header({
           onMouseEnter={() => setLogoHovered(true)}
           onMouseLeave={() => setLogoHovered(false)}
         >
-          <Logomark
-            className="h-8 sm:hidden"
-            invert={invert}
+          <LogomarkStatic
+            className="h-8 w-8 sm:hidden"
           />
           <Logo
             className="hidden h-8 sm:block"
@@ -154,7 +153,7 @@ function Navigation() {
   )
 }
 
-function RootLayoutInner({ children }: { children: React.ReactNode }) {
+function RootLayoutInner({ children, isHome = false }: { children: React.ReactNode; isHome?: boolean }) {
   let panelId = useId()
   let [expanded, setExpanded] = useState(false)
   let openRef = useRef<React.ElementRef<'button'>>(null)
@@ -193,6 +192,7 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
             icon={MenuIcon}
             toggleRef={openRef}
             expanded={expanded}
+            invert={isHome}
             onToggle={() => {
               setExpanded((expanded) => !expanded)
               window.setTimeout(
@@ -255,22 +255,30 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
 
       <motion.div
         layout
-        style={{ borderTopLeftRadius: 40, borderTopRightRadius: 40 }}
-        className="relative flex flex-auto overflow-hidden bg-white pt-14"
+        style={isHome ? undefined : { borderTopLeftRadius: 40, borderTopRightRadius: 40 }}
+        className={clsx(
+          'relative flex flex-auto overflow-hidden',
+          isHome ? 'bg-neutral-950' : 'bg-white pt-14',
+        )}
       >
         <motion.div
           layout
-          className="relative isolate flex w-full flex-col pt-9"
+          className={clsx(
+            'relative isolate flex w-full flex-col',
+            isHome ? '' : 'pt-9',
+          )}
         >
-          <GridPattern
-            className="absolute inset-x-0 -top-14 -z-10 h-[1000px] w-full fill-neutral-50 stroke-neutral-950/5 [mask-image:linear-gradient(to_bottom_left,white_40%,transparent_50%)]"
-            yOffset={-96}
-            interactive
-          />
+          {!isHome && (
+            <GridPattern
+              className="absolute inset-x-0 -top-14 -z-10 h-[1000px] w-full fill-neutral-50 stroke-neutral-950/5 [mask-image:linear-gradient(to_bottom_left,white_40%,transparent_50%)]"
+              yOffset={-96}
+              interactive
+            />
+          )}
 
           <main className="w-full flex-auto">{children}</main>
 
-          <Footer />
+          <Footer invert={isHome} />
         </motion.div>
       </motion.div>
     </MotionConfig>
@@ -280,10 +288,11 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
 export function RootLayout({ children }: { children: React.ReactNode }) {
   let pathname = usePathname()
   let [logoHovered, setLogoHovered] = useState(false)
+  let isHome = pathname === '/'
 
   return (
     <RootLayoutContext.Provider value={{ logoHovered, setLogoHovered }}>
-      <RootLayoutInner key={pathname}>{children}</RootLayoutInner>
+      <RootLayoutInner key={pathname} isHome={isHome}>{children}</RootLayoutInner>
     </RootLayoutContext.Provider>
   )
 }

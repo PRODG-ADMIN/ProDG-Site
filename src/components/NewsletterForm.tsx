@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import clsx from 'clsx';
 import { subscribeToNewsletter } from '@/app/actions/newsletter';
 
 function ArrowIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -16,7 +17,7 @@ function ArrowIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   );
 }
 
-export function NewsletterForm() {
+export function NewsletterForm({ invert = false }: { invert?: boolean } = {}) {
   const [formState, setFormState] = useState<{
     pending: boolean;
     success: boolean;
@@ -66,10 +67,13 @@ export function NewsletterForm() {
 
   return (
     <form id="newsletterForm" className="max-w-sm" action={handleSubmit}>
-      <h2 className="font-display text-sm font-semibold tracking-wider text-neutral-950">
+      <h2 className={clsx(
+        'font-display text-sm font-semibold tracking-wider',
+        invert ? 'text-white' : 'text-neutral-950',
+      )}>
         Sign up for our newsletter
       </h2>
-      <p className="mt-4 text-sm text-neutral-700">
+      <p className={clsx('mt-4 text-sm', invert ? 'text-neutral-400' : 'text-neutral-700')}>
         Subscribe to get the latest design news, articles, resources and
         inspiration.
       </p>
@@ -94,17 +98,30 @@ export function NewsletterForm() {
           autoComplete="email"
           aria-label="Email address"
           required
-          className="block w-full rounded-2xl border border-neutral-300 bg-transparent py-4 pl-6 pr-20 text-base/6 text-neutral-950 ring-4 ring-transparent transition placeholder:text-neutral-500 focus:border-neutral-950 focus:outline-none focus:ring-neutral-950/5"
+          className={clsx(
+            'block w-full rounded-2xl border bg-transparent py-4 pl-6 pr-20 text-base/6 ring-4 ring-transparent transition focus:outline-none',
+            invert
+              ? 'border-white/20 text-white placeholder:text-neutral-500 focus:border-white focus:ring-white/10'
+              : 'border-neutral-300 text-neutral-950 placeholder:text-neutral-500 focus:border-neutral-950 focus:ring-neutral-950/5',
+          )}
         />
         <div className="absolute inset-y-1 right-1 flex justify-end">
           <button
             type="submit"
             aria-label="Submit"
             disabled={formState.pending}
-            className="flex aspect-square h-full items-center justify-center rounded-xl bg-neutral-950 text-white transition hover:bg-neutral-800 disabled:opacity-70"
+            className={clsx(
+              'flex aspect-square h-full items-center justify-center rounded-xl transition disabled:opacity-70',
+              invert
+                ? 'bg-white text-neutral-950 hover:bg-neutral-200'
+                : 'bg-neutral-950 text-white hover:bg-neutral-800',
+            )}
           >
             {formState.pending ? (
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              <span className={clsx(
+                'h-4 w-4 animate-spin rounded-full border-2 border-t-transparent',
+                invert ? 'border-neutral-950' : 'border-white',
+              )} />
             ) : (
               <ArrowIcon className="w-4" />
             )}
